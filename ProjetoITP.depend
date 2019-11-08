@@ -1,7 +1,8 @@
 # depslib dependency file v1.0
-1573086557 source:d:\graduação ufrn\2º semestre\itp\projeto_itp\projetoitp\main.c
+1573228307 source:d:\graduação ufrn\2º semestre\itp\projeto_itp\projetoitp\main.c
 	<stdlib.h>
 	<gtk/gtk.h>
+	"dominio.h"
 
 1174890996 c:\gtk\include\gtk-2.0\gtk\gtk.h
 	<gdk/gdk.h>
@@ -1710,4 +1711,6 @@
 1174890996 c:\gtk\include\gtk-2.0\gtk\gtkvseparator.h
 	<gdk/gdk.h>
 	<gtk/gtkseparator.h>
+
+1573228555 d:\graduação ufrn\2º semestre\itp\projeto_itp\projetoitp\dominio.h
 
