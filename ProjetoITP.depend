@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1573228307 source:d:\graduação ufrn\2º semestre\itp\projeto_itp\projetoitp\main.c
+1573249368 source:d:\graduação ufrn\2º semestre\itp\projeto_itp\projetoitp\main.c
 	<stdlib.h>
 	<gtk/gtk.h>
 	"dominio.h"
@@ -1712,5 +1712,5 @@
 	<gdk/gdk.h>
 	<gtk/gtkseparator.h>
 
-1573228555 d:\graduação ufrn\2º semestre\itp\projeto_itp\projetoitp\dominio.h
+1573239484 d:\graduação ufrn\2º semestre\itp\projeto_itp\projetoitp\dominio.h
 

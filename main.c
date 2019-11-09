@@ -2,15 +2,37 @@
 #include <gtk/gtk.h>
 #include "dominio.h"
 
-int largura=800,altura=600;
+int largura=3,altura=2;
 Color corPadrao={255,255,255};
 Imagem imagem;
 Imagem * pontImagem=&imagem;
 
+
+static void dialogSalvar (GtkWidget *wid, GtkWidget *win){
+  save();
+  GtkWidget *dialog = NULL;
+
+  dialog = gtk_message_dialog_new (GTK_WINDOW (win), GTK_DIALOG_MODAL, GTK_MESSAGE_INFO, GTK_BUTTONS_CLOSE, "Imegem salva com sucesso!");
+  gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER);
+  gtk_dialog_run (GTK_DIALOG (dialog));
+  gtk_widget_destroy (dialog);
+}
+
+
+static void dialogGerar (GtkWidget *wid, GtkWidget *win){
+  newImagem();
+  GtkWidget *dialog = NULL;
+
+  dialog = gtk_message_dialog_new (GTK_WINDOW (win), GTK_DIALOG_MODAL, GTK_MESSAGE_INFO, GTK_BUTTONS_CLOSE, "Imegem gerada com sucesso!");
+  gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER);
+  gtk_dialog_run (GTK_DIALOG (dialog));
+  gtk_widget_destroy (dialog);
+}
+
 void save(){
 
     FILE *file = fopen("imagem.ppm","w");
-    fprintf(file,"%s\n%d %d\n%d\n",(*pontImagem).identificador,(*pontImagem).largura,(*pontImagem).altura,(*pontImagem).valorMaximo);
+    fprintf(file,"%c%c\n%d %d\n%d\n",(*pontImagem).identificador[0],(*pontImagem).identificador[1],(*pontImagem).largura,(*pontImagem).altura,(*pontImagem).valorMaximo);
    int linha=0;
     int coluna=0;
     for(linha=0;linha<imagem.altura;linha++){
@@ -35,16 +57,25 @@ Pixel **matrixPixel;
    }
 
     Pixel pixelPadrao= {corPadrao};
+    Pixel cor1={255,0,0};
+    Pixel cor2={0,255,0};
+    Pixel cor3={0,0,255};
+    Pixel cor4={255,255,0};
+    Pixel cor5={255,255,255};
+    Pixel cor6={0,0,0};
+    Pixel cores[6]={cor1,cor2,cor3,cor4,cor5,cor6};
 
     int lg;
+    int corCount=0;
     for(i=0; i< altura;i++){
         for(lg=0;lg<largura;lg++){
-            matrixPixel[i][lg]=pixelPadrao;
+            matrixPixel[i][lg]=cores[corCount];
+            corCount++;
         }
     }
 
 
- Imagem im = {{'P','3'},largura,altura,255,matrixPixel};
+ Imagem im = {"P3",largura,altura,255,matrixPixel};
  imagem=im;
 
 }
@@ -77,11 +108,11 @@ int main (int argc, char *argv[]){
   gtk_container_add (GTK_CONTAINER (win), vbox);
 
   button = gtk_button_new_from_stock ("Gerar Imagem");
-  g_signal_connect (button,"clicked",newImagem,NULL);
+  g_signal_connect (G_OBJECT (button), "clicked", G_CALLBACK (dialogGerar), (gpointer) win);
   gtk_box_pack_start (GTK_BOX (vbox), button, TRUE, TRUE, 0);
 
   button = gtk_button_new_from_stock ("Salvar Imagem");
-  g_signal_connect (button, "clicked",save,NULL);
+  g_signal_connect (G_OBJECT (button), "clicked", G_CALLBACK (dialogSalvar), (gpointer) win);
   gtk_box_pack_start (GTK_BOX (vbox), button, TRUE, TRUE, 0);
 
   button = gtk_button_new_from_stock ("Sair");
