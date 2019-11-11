@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1573455101 source:d:\graduação ufrn\2º semestre\itp\projeto_itp\projetoitp\main.c
+1573451633 source:d:\graduação ufrn\2º semestre\itp\projeto_itp\projetoitp\main.c
 	<stdio.h>
 	<stdlib.h>
 	<gtk/gtk.h>
@@ -4602,11 +4602,4 @@
 	<gtk/gtkseparator.h>
 
 1555652083 c:\msys64\mingw64\include\gtk-3.0\gtk\gtk-autocleanups.h
-
-1573426414 source:d:\workspace\projetoitp\main.c
-	<stdlib.h>
-	<gtk/gtk.h>
-	"dominio.h"
-
-1573426061 d:\workspace\projetoitp\dominio.h
 

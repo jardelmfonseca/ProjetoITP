@@ -12,21 +12,13 @@ Imagem * pontImagem=&imagem;
 int countCoordenadas=0;
 Coordenada coordenadas[20];
 
-<<<<<<< HEAD
 int countCoordenadasPintar=0;
 Coordenada coordenadasPintar[20];
 
 int tipoUltipoDesenho=0;
-=======
-// Caixa de diálogo que apresenta a mensagem de imagem salva
-static void dialogSalvar (GtkWidget *wid, GtkWidget *win){
-  save();
-  GtkWidget *dialog = NULL;
->>>>>>> origin
 
 double ultimaCoordenadaX,ultimaCoordenadaY,ultimaCoordenadaPintarX,ultimaCoordenadaPintarY;
 
-<<<<<<< HEAD
 GtkWidget *botaoPintar;
 GtkWidget *botaoPoligono;
 GtkWidget *botaoCirculo;
@@ -40,19 +32,8 @@ GtkWidget *areaImagem;
 
     GtkBuilder *builder;
     GtkWidget  *window;
-=======
-// Caixa de dialogo que apresenta a mensagem imagem gerada
-static void dialogGerar (GtkWidget *wid, GtkWidget *win){
-  newImagem();
-  GtkWidget *dialog = NULL;
->>>>>>> origin
 
 
-<<<<<<< HEAD
-=======
-// Função para salver o arquivo de imagem .PPM
-void save(){
->>>>>>> origin
 
 /* Surface to store current scribbles */
 static cairo_surface_t *surface = NULL;
@@ -267,6 +248,7 @@ void desenharPoligono(){
 
     // fecha com a coordenada inicial
     cairo_close_path (cr);
+    //cairo_line_to (cr,cordenadaX+50,cordenadaY);
     cairo_stroke (cr);
 
     // atualiza o componente gtk
@@ -437,7 +419,6 @@ static gboolean motion_notify_event_cb (GtkWidget *widget,GdkEventMotion *event,
 int main(int argc, char *argv[]){
 
 
-<<<<<<< HEAD
     gtk_init(&argc, &argv);
 
     builder = gtk_builder_new();
@@ -457,45 +438,6 @@ int main(int argc, char *argv[]){
 
     botaoRetangulo = GTK_WIDGET(gtk_builder_get_object(builder, "botaoRetangulo"));
     g_signal_connect (botaoRetangulo, "clicked",desenharRetangulo, NULL);
-=======
-  // Inicialização do GTK+
-  g_log_set_handler ("Gtk", G_LOG_LEVEL_WARNING, (GLogFunc) gtk_false, NULL);
-  gtk_init (&argc, &argv);
-  g_log_set_handler ("Gtk", G_LOG_LEVEL_WARNING, g_log_default_handler, NULL);
-
-  // Cria a tela principal no GTK+
-  win = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-  gtk_container_set_border_width (GTK_CONTAINER (win), 8);
-  gtk_window_set_title (GTK_WINDOW (win), "Projeto ITP");
-  gtk_window_set_position (GTK_WINDOW (win), GTK_WIN_POS_CENTER);
-  gtk_window_unfullscreen (win);
-  gtk_window_set_default_size(win,800,600);
-  gtk_widget_realize (win);
-  g_signal_connect (win, "destroy", gtk_main_quit, NULL);
-
-  // Cria uma caixa vertical com botões
-  vbox = gtk_vbox_new (TRUE, 6);
-  gtk_container_add (GTK_CONTAINER (win), vbox);
-
-  // Botão 01 criar imagem
-  button = gtk_button_new_from_stock ("Gerar Imagem");
-  g_signal_connect (G_OBJECT (button), "clicked", G_CALLBACK (dialogGerar), (gpointer) win);
-  gtk_box_pack_start (GTK_BOX (vbox), button, TRUE, TRUE, 0);
-
-  // Botaão 02 Salvar imagem
-  button = gtk_button_new_from_stock ("Salvar Imagem");
-  g_signal_connect (G_OBJECT (button), "clicked", G_CALLBACK (dialogSalvar), (gpointer) win);
-  gtk_box_pack_start (GTK_BOX (vbox), button, TRUE, TRUE, 0);
-
-  // Botão 02 sair da aplicação
-  button = gtk_button_new_from_stock ("Sair");
-  g_signal_connect (button, "clicked", gtk_main_quit, NULL);
-  gtk_box_pack_start (GTK_BOX (vbox), button, TRUE, TRUE, 0);
-
-  // Mantem um loop para persistir a janela da aplicação aberta até o encerramento
-  gtk_widget_show_all (win);
-  gtk_main ();
->>>>>>> origin
 
     botaoCor = GTK_WIDGET(gtk_builder_get_object(builder, "botaoCor"));
     g_signal_connect (botaoCor, "clicked", NULL, NULL);
