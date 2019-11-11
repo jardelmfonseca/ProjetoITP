@@ -4603,3 +4603,10 @@
 
 1555652083 c:\msys64\mingw64\include\gtk-3.0\gtk\gtk-autocleanups.h
 
+1573426414 source:d:\workspace\projetoitp\main.c
+	<stdlib.h>
+	<gtk/gtk.h>
+	"dominio.h"
+
+1573426061 d:\workspace\projetoitp\dominio.h
+
