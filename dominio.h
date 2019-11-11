@@ -18,4 +18,9 @@ typedef struct imagem{
 
 }Imagem;
 
+typedef struct coordenada{
+ double x;
+ double y;
+}Coordenada;
+
 #endif // DOMINIO_H_INCLUDED

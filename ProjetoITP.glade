@@ -1,57 +1,191 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<interface>#FFFFFF
+<interface>
   <!-- interface-requires gtk+ 3.0 -->
-  <object class="GtkAction" id="action1"/>
-  <object class="GtkWindow" id="janelaPrincipal">
-    <property name="width_request">800</property>
-    <property name="height_request">600</property>
+  <!-- interface-local-resource-path D:\Graduação -->
+  <object class="GtkImage" id="imageBotaoCirculo">
+    <property name="visible">True</property>
     <property name="can_focus">False</property>
+    <property name="icon_name">widget-gtk-spinner</property>
+  </object>
+  <object class="GtkImage" id="imageBotaoPintar">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">widget-gtk-colorselection</property>
+  </object>
+  <object class="GtkImage" id="imageBotaoRetangulo">
+    <property name="width_request">4</property>
+    <property name="height_request">4</property>
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">widget-gtk-entrybuffer</property>
+  </object>
+  <object class="GtkImage" id="imagePoligono">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">widget-gtk-fixed</property>
+    <property name="use_fallback">True</property>
+  </object>
+  <object class="GtkWindow" id="janelaPrincipal">
+    <property name="width_request">1024</property>
+    <property name="height_request">768</property>
+    <property name="can_focus">False</property>
+    <property name="title" translatable="yes">Editor de Imagens</property>
+    <property name="window_position">center</property>
+    <signal name="destroy" handler="on_window_main_destroy" swapped="no"/>
     <child>
       <object class="GtkLayout" id="layout1">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <child>
           <object class="GtkButtonBox" id="buttonbox1">
-            <property name="width_request">800</property>
+            <property name="width_request">1024</property>
             <property name="height_request">60</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="layout_style">spread</property>
+            <property name="valign">end</property>
+            <property name="homogeneous">True</property>
+            <property name="layout_style">end</property>
             <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <object class="GtkButton" id="botaoSair">
-                <property name="label" translatable="yes">Sair</property>
+              <object class="GtkButton" id="botaoPintar">
+                <property name="label" translatable="yes">Pintar</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="image_position">bottom</property>
-                <signal name="clicked" handler="on_botaoSair_clicked" swapped="no"/>
+                <property name="image">imageBotaoPintar</property>
+                <property name="image_position">top</property>
+                <property name="always_show_image">True</property>
               </object>
               <packing>
                 <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="botaoPoligono">
+                <property name="label" translatable="yes">Polígono</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="image">imagePoligono</property>
+                <property name="image_position">top</property>
+                <property name="always_show_image">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="botaoCirculo">
+                <property name="label" translatable="yes">Círculo</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="image">imageBotaoCirculo</property>
+                <property name="image_position">top</property>
+                <property name="always_show_image">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="botaoRetangulo">
+                <property name="label" translatable="yes">Retângulo</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="image">imageBotaoRetangulo</property>
+                <property name="image_position">top</property>
+                <property name="always_show_image">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="botaoCor">
+                <property name="label">gtk-select-color</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="use_stock">True</property>
+                <property name="image_position">top</property>
+                <property name="always_show_image">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">4</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="botaoAbrir">
+                <property name="label">gtk-open</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="use_stock">True</property>
+                <property name="image_position">top</property>
+                <property name="always_show_image">True</property>
+                <signal name="clicked" handler="botaoTest_clicked_cb" swapped="yes"/>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">5</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="botaoNovo">
+                <property name="label">gtk-new</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="use_stock">True</property>
+                <property name="image_position">top</property>
+                <property name="always_show_image">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">6</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="botaoSalvar">
+                <property name="label">gtk-save</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="use_stock">True</property>
+                <property name="image_position">top</property>
+                <property name="always_show_image">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">8</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="botaoSair">
+                <property name="label">gtk-quit</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">False</property>
+                <property name="use_stock">True</property>
+                <property name="image_position">top</property>
+                <property name="always_show_image">True</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
                 <property name="fill">True</property>
                 <property name="position">9</property>
               </packing>
@@ -59,15 +193,16 @@
           </object>
         </child>
         <child>
-          <object class="GtkDrawingArea" id="drawingarea1">
+          <object class="GtkDrawingArea" id="areaImagem">
             <property name="width_request">800</property>
-            <property name="height_request">540</property>
+            <property name="height_request">600</property>
             <property name="visible">True</property>
+            <property name="app_paintable">True</property>
             <property name="can_focus">False</property>
-            <property name="halign">start</property>
           </object>
           <packing>
-            <property name="y">60</property>
+            <property name="x">100</property>
+            <property name="y">80</property>
           </packing>
         </child>
       </object>

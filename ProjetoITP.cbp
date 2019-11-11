@@ -15,9 +15,6 @@
 				<Compiler>
 					<Add option="-g" />
 				</Compiler>
-				<Linker>
-					<Add library="libglade-2.0" />
-				</Linker>
 			</Target>
 			<Target title="Release">
 				<Option output="bin/Release/ProjetoITP" prefix_auto="1" extension_auto="1" />
@@ -34,26 +31,7 @@
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
-			<Add option="-mms-bitfields" />
-			<Add directory="C:/gtk/include" />
-			<Add directory="C:/gtk/include/gtk-2.0" />
-			<Add directory="C:/gtk/include/cairo" />
-			<Add directory="C:/gtk/include/gdk" />
-			<Add directory="C:/gtk/include/glib-2.0" />
-			<Add directory="C:/gtk/lib/glib-2.0/include" />
-			<Add directory="C:/gtk/include/pango-1.0" />
-			<Add directory="C:/gtk/lib/gtk-2.0/include" />
-			<Add directory="C:/gtk/include/atk-1.0" />
-			<Add directory="C:/gtk/include/gdk-pixbuf-2.0" />
-			<Add directory="C:/gtk/include/libglade-2.0/glade" />
 		</Compiler>
-		<Linker>
-			<Add library="gtk-win32-2.0" />
-			<Add library="gobject-2.0" />
-			<Add library="glib-2.0" />
-			<Add directory="C:/gtk/lib" />
-			<Add directory="C:/gtk/lib/libglade/2.0" />
-		</Linker>
 		<Unit filename="dominio.h">
 			<Option target="&lt;{~None~}&gt;" />
 		</Unit>
