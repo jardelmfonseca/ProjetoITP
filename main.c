@@ -81,13 +81,31 @@ Pixel **matrixPixel;
  Imagem im = {"P3",largura,altura,255,matrixPixel};
  imagem=im;
 
- // coloca imagem no painel
- //  painelImagem = gtk_image_new_from_file ("imagem.ppm");
 
+     GtkWidget *dialog;
+    GtkFileFilter *filtro;
 
+    dialog = gtk_file_chooser_dialog_new("Carregar imagem:", GTK_WINDOW(window), GTK_FILE_CHOOSER_ACTION_SAVE, GTK_STOCK_SAVE,GTK_RESPONSE_OK, GTK_STOCK_CANCEL,GTK_RESPONSE_CANCEL, NULL);
+    //criando filtro de extenção de arquivo
+    filtro = gtk_file_filter_new();
+    gtk_file_filter_add_pattern(filtro, "*.ppm");
+    //adicionando o filtro ao dialog
+    gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), filtro);
+    // preenche a sugestão de nome para o arquivo
+    gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(dialog), "imagem.ppm");
+    // exibe o dialog
+    gtk_widget_show_all(dialog);
 
+    // pegando a resposta
+    gint resposta = gtk_dialog_run(GTK_DIALOG(dialog));
+    if (resposta == GTK_RESPONSE_OK){
+            // aqui vai carregar a imagem selecionada
+    char *caminhoArquivo;
+    caminhoArquivo = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
 
-    FILE *file = fopen("imagem.ppm","w");
+    //  printf("%s",caminhoArquivo);
+        // salvando a imagem em arquivo
+    FILE *file = fopen(caminhoArquivo,"w");
     fprintf(file,"%c%c\n%d %d\n%d\n",(*pontImagem).identificador[0],(*pontImagem).identificador[1],(*pontImagem).largura,(*pontImagem).altura,(*pontImagem).valorMaximo);
    int linha=0;
     int coluna=0;
@@ -97,14 +115,25 @@ Pixel **matrixPixel;
         }
     }
     fclose(file);
+
+
+    }else{
+      // aqui se foi cancelado
+    }
+
+    gtk_widget_destroy(dialog);
+
+
+
+
 // coloca imagem no painel
 //   painelImagem = gtk_image_new_from_file ("imagem.ppm");
     // exibe dialog de sucesso na operação
-    GtkWidget *dialog;
-  dialog = gtk_message_dialog_new(GTK_WINDOW(window),GTK_DIALOG_DESTROY_WITH_PARENT,GTK_MESSAGE_INFO,GTK_BUTTONS_OK,"Arquivo \"Imagem.ppm\" salvo com sucesso!");
-  gtk_window_set_title(GTK_WINDOW(dialog), "Aviso");
-  gtk_dialog_run(GTK_DIALOG(dialog));
-  gtk_widget_destroy(dialog);
+    GtkWidget *dialogConfirmacao;
+  dialogConfirmacao = gtk_message_dialog_new(GTK_WINDOW(window),GTK_DIALOG_DESTROY_WITH_PARENT,GTK_MESSAGE_INFO,GTK_BUTTONS_OK,"Arquivo \"Imagem.ppm\" salvo com sucesso!");
+  gtk_window_set_title(GTK_WINDOW(dialogConfirmacao), "Aviso");
+  gtk_dialog_run(GTK_DIALOG(dialogConfirmacao));
+  gtk_widget_destroy(dialogConfirmacao);
 
 
 }
@@ -128,29 +157,176 @@ void newImagem(GtkWidget *widget, gpointer window){
 
 }
 
+// FUNÇÃO PARA ABRIR O DIALOG SELETOR DE CORES
+void selecionarCor () {
 
+
+  GtkWidget *dialog;
+  GtkResponseType *tipoResultadoSelecao;
+  GtkColorSelection *corSelecionada;
+
+  dialog = gtk_color_selection_dialog_new ("Cor da Linha");
+  tipoResultadoSelecao = gtk_dialog_run (GTK_DIALOG (dialog));
+
+  // pegando o resultado da seleção se clicado em OK
+  if(tipoResultadoSelecao == GTK_RESPONSE_OK){
+    GdkColor corGdk;
+    gtk_color_selection_dialog_get_color_selection(corSelecionada);
+    gtk_color_selection_get_current_color(corSelecionada,&corGdk);
+
+    printf("%d",(int)corGdk.red);
+
+    // alterarndo a cor da linha
+    corPincel.r=corGdk.red;
+    corPincel.g=corGdk.green;
+    corPincel.b=corGdk.blue;
+
+  }
+
+  gtk_widget_destroy(dialog);
+
+}
+
+// essa função abre uma janela para a seleção da imagem e carrega a mesma no sistema
 void abrirImagem (GtkButton* button, gpointer user_data){
-	GtkWidget *image = GTK_WIDGET (user_data);
-	GtkWidget *toplevel = gtk_widget_get_toplevel (image);
-	GtkFileFilter *filtro = gtk_file_filter_new ();
-	gtk_file_filter_add_pattern(filtro,".ccp");
-	GtkWidget *dialog = gtk_file_chooser_dialog_new (("Abrir imagem"),GTK_WINDOW (toplevel),GTK_FILE_CHOOSER_ACTION_OPEN,GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,NULL);
 
-	gtk_file_filter_add_pixbuf_formats (filtro);
-	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (dialog),filtro);
 
-	switch (gtk_dialog_run (GTK_DIALOG (dialog))){
-		case GTK_RESPONSE_ACCEPT:
-		    {
-            gchar *filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
-			gtk_image_set_from_file (GTK_IMAGE (image), filename);
-			break;
-		    }
+    GtkWidget *dialog;
+    GtkFileFilter *filtro;
 
-		default:
-			break;
-	}
-	gtk_widget_destroy (dialog);
+    dialog = gtk_file_chooser_dialog_new("Carregar imagem:", GTK_WINDOW(window), GTK_FILE_CHOOSER_ACTION_OPEN, GTK_STOCK_OPEN,GTK_RESPONSE_OK, GTK_STOCK_CANCEL,GTK_RESPONSE_CANCEL, NULL);
+    //criando filtro de extenção de arquivo
+    filtro = gtk_file_filter_new();
+    gtk_file_filter_add_pattern(filtro, "*.ppm");
+    //adicionando o filtro ao dialog
+    gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), filtro);
+    gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(dialog), "imagem.cpp");
+    gtk_widget_show_all(dialog);
+
+    // pegando a resposta
+    gint resposta = gtk_dialog_run(GTK_DIALOG(dialog));
+    if (resposta == GTK_RESPONSE_ACCEPT){
+            // aqui vai carregar a imagem selecionada
+
+
+
+   Pixel **matrixPixel;
+
+
+          // aqui vai carregar a imagem selecionada
+    char *caminhoArquivo;
+    caminhoArquivo = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
+
+     FILE *file = fopen(caminhoArquivo,"r");
+    if(file == NULL){
+     printf("nao foi possivel carregar a imagem!");
+    }else{
+    char tmp[11];
+
+    int itr=0;
+    while(fgets(tmp,11,file) != NULL){
+
+    switch(itr){
+  case 0:
+    break;
+  case 1:
+/*
+ int c=0;
+ int qtd=0;
+ int vlrAlt=0;
+  while(str[c]!='\0'){
+        if(c!=' '){
+			switch(str[c]){
+				case '0':
+					qtd+=N[0];
+					break;
+				case '1':
+					qtd+=N[1];
+				  	break;
+				case '2':
+					qtd+=N[2];
+				  	break;
+				case '3':
+					qtd+=N[3];
+				  	break;
+				case '4':
+					qtd+=N[4];
+				  	break;
+				case '5':
+					qtd+=N[5];
+				  	break;
+				case '6':
+					qtd+=N[6];
+				  	break;
+				case '7':
+					qtd+=N[7];
+				  	break;
+				case '8':
+					qtd+=N[8];
+				  	break;
+				case '9':
+					qtd+=N[9];
+				  	break;
+				default:
+					break;
+			}
+			}else{
+
+			}
+      c++;
+
+  }
+/*
+
+    int lg;
+    int corCount=0;
+    for(i=0; i< altura;i++){
+        for(lg=0;lg<largura;lg++){
+            if(corCount<6){
+            matrixPixel[i][lg]=cores[corCount];
+            }else{
+            matrixPixel[i][lg]=pixelPadrao;
+            }
+            corCount++;
+        }
+    }
+
+
+ */
+
+
+      //num = strtol(cNum, NULL, 10);
+    break;
+case 2:
+    break;
+default:
+    break;
+
+    }
+    itr++;
+
+
+    }
+
+ //   Imagem im = {"P3",largura,altura,255,matrixPixel};
+//    imagem=im;
+
+
+
+    fclose(file);
+    }
+
+
+        g_print("%s\n", gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog)));
+    }else{
+      // aqui se foi cancelado
+    }
+
+    gtk_widget_destroy(dialog);
+
+
+
+
 }
 
 
@@ -440,7 +616,7 @@ int main(int argc, char *argv[]){
     g_signal_connect (botaoRetangulo, "clicked",desenharRetangulo, NULL);
 
     botaoCor = GTK_WIDGET(gtk_builder_get_object(builder, "botaoCor"));
-    g_signal_connect (botaoCor, "clicked", NULL, NULL);
+    g_signal_connect (botaoCor, "clicked",selecionarCor, NULL);
 
     botaoAbrir = GTK_WIDGET(gtk_builder_get_object(builder, "botaoAbrir"));
     g_signal_connect(G_OBJECT(botaoAbrir), "clicked", G_CALLBACK(abrirImagem), (gpointer) window);
