@@ -10,10 +10,10 @@ Color corPincel={0,0,0};
 Imagem imagem;
 Imagem * pontImagem=&imagem;
 int countCoordenadas=0;
-Coordenada coordenadas[20];
+Coordenada coordenadas[100];
 
 int countCoordenadasPintar=0;
-Coordenada coordenadasPintar[20];
+Coordenada coordenadasPintar[100];
 
 int tipoUltipoDesenho=0;
 
@@ -86,12 +86,12 @@ Pixel **matrixPixel;
     GtkFileFilter *filtro;
 
     dialog = gtk_file_chooser_dialog_new("Carregar imagem:", GTK_WINDOW(window), GTK_FILE_CHOOSER_ACTION_SAVE, GTK_STOCK_SAVE,GTK_RESPONSE_OK, GTK_STOCK_CANCEL,GTK_RESPONSE_CANCEL, NULL);
-    //criando filtro de extenção de arquivo
+    //criando filtro de extenï¿½ï¿½o de arquivo
     filtro = gtk_file_filter_new();
     gtk_file_filter_add_pattern(filtro, "*.ppm");
     //adicionando o filtro ao dialog
     gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), filtro);
-    // preenche a sugestão de nome para o arquivo
+    // preenche a sugestï¿½o de nome para o arquivo
     gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(dialog), "imagem.ppm");
     // exibe o dialog
     gtk_widget_show_all(dialog);
@@ -128,7 +128,7 @@ Pixel **matrixPixel;
 
 // coloca imagem no painel
 //   painelImagem = gtk_image_new_from_file ("imagem.ppm");
-    // exibe dialog de sucesso na operação
+    // exibe dialog de sucesso na operaï¿½ï¿½o
     GtkWidget *dialogConfirmacao;
   dialogConfirmacao = gtk_message_dialog_new(GTK_WINDOW(window),GTK_DIALOG_DESTROY_WITH_PARENT,GTK_MESSAGE_INFO,GTK_BUTTONS_OK,"Arquivo \"Imagem.ppm\" salvo com sucesso!");
   gtk_window_set_title(GTK_WINDOW(dialogConfirmacao), "Aviso");
@@ -157,29 +157,34 @@ void newImagem(GtkWidget *widget, gpointer window){
 
 }
 
-// FUNÇÃO PARA ABRIR O DIALOG SELETOR DE CORES
+// FUNCAO PARA ABRIR O DIALOG SELETOR DE CORES
 void selecionarCor () {
-
 
   GtkWidget *dialog;
   GtkResponseType *tipoResultadoSelecao;
   GtkColorSelection *corSelecionada;
-
+  GdkColor corGdk;
   dialog = gtk_color_selection_dialog_new ("Cor da Linha");
-  tipoResultadoSelecao = gtk_dialog_run (GTK_DIALOG (dialog));
 
-  // pegando o resultado da seleção se clicado em OK
+  corSelecionada = GTK_COLOR_SELECTION (gtk_color_selection_dialog_get_color_selection (GTK_COLOR_SELECTION_DIALOG (dialog)));
+
+  gtk_color_selection_set_previous_color (corSelecionada, &corGdk);
+  gtk_color_selection_set_current_color (corSelecionada, &corGdk);
+  gtk_color_selection_set_has_palette (corSelecionada, TRUE);
+
+  tipoResultadoSelecao = gtk_dialog_run(GTK_DIALOG (dialog));
+
+  // pegando o resultado da seleï¿½ï¿½o sehas_p
   if(tipoResultadoSelecao == GTK_RESPONSE_OK){
-    GdkColor corGdk;
-    gtk_color_selection_dialog_get_color_selection(corSelecionada);
+
     gtk_color_selection_get_current_color(corSelecionada,&corGdk);
 
     printf("%d",(int)corGdk.red);
 
     // alterarndo a cor da linha
-    corPincel.r=corGdk.red;
-    corPincel.g=corGdk.green;
-    corPincel.b=corGdk.blue;
+    corPincel.r=(int) corGdk.red/257;
+    corPincel.g=(int) corGdk.green/257;
+    corPincel.b=(int) corGdk.blue/257;
 
   }
 
@@ -187,7 +192,7 @@ void selecionarCor () {
 
 }
 
-// essa função abre uma janela para a seleção da imagem e carrega a mesma no sistema
+// essa funï¿½ï¿½o abre uma janela para a seleï¿½ï¿½o da imagem e carrega a mesma no sistema
 void abrirImagem (GtkButton* button, gpointer user_data){
 
 
@@ -195,7 +200,7 @@ void abrirImagem (GtkButton* button, gpointer user_data){
     GtkFileFilter *filtro;
 
     dialog = gtk_file_chooser_dialog_new("Carregar imagem:", GTK_WINDOW(window), GTK_FILE_CHOOSER_ACTION_OPEN, GTK_STOCK_OPEN,GTK_RESPONSE_OK, GTK_STOCK_CANCEL,GTK_RESPONSE_CANCEL, NULL);
-    //criando filtro de extenção de arquivo
+    //criando filtro de extenï¿½ï¿½o de arquivo
     filtro = gtk_file_filter_new();
     gtk_file_filter_add_pattern(filtro, "*.ppm");
     //adicionando o filtro ao dialog
