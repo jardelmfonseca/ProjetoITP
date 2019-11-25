@@ -157,7 +157,7 @@ void newImagem(GtkWidget *widget, gpointer window){
 
 }
 
-// FUNCAO PARA ABRIR O DIALOG SELETOR DE CORES
+/* FUNCAO PARA ABRIR O DIALOG SELETOR DE CORES */
 void selecionarCor () {
 
   GtkWidget *dialog;
@@ -174,7 +174,7 @@ void selecionarCor () {
 
   tipoResultadoSelecao = gtk_dialog_run(GTK_DIALOG (dialog));
 
-  // pegando o resultado da sele��o sehas_p
+  // pega o resultado da selecao da cor
   if(tipoResultadoSelecao == GTK_RESPONSE_OK){
 
     gtk_color_selection_get_current_color(corSelecionada,&corGdk);
@@ -192,7 +192,7 @@ void selecionarCor () {
 
 }
 
-// essa fun��o abre uma janela para a sele��o da imagem e carrega a mesma no sistema
+// essa funcao abre uma janela para a selecao da imagem e ela carrega no sistema
 void abrirImagem (GtkButton* button, gpointer user_data){
 
 
@@ -200,7 +200,7 @@ void abrirImagem (GtkButton* button, gpointer user_data){
     GtkFileFilter *filtro;
 
     dialog = gtk_file_chooser_dialog_new("Carregar imagem:", GTK_WINDOW(window), GTK_FILE_CHOOSER_ACTION_OPEN, GTK_STOCK_OPEN,GTK_RESPONSE_OK, GTK_STOCK_CANCEL,GTK_RESPONSE_CANCEL, NULL);
-    //criando filtro de exten��o de arquivo
+    //criando filtro de extencao de arquivo
     filtro = gtk_file_filter_new();
     gtk_file_filter_add_pattern(filtro, "*.ppm");
     //adicionando o filtro ao dialog
@@ -313,14 +313,8 @@ default:
 
     }
 
- //   Imagem im = {"P3",largura,altura,255,matrixPixel};
-//    imagem=im;
-
-
-
     fclose(file);
     }
-
 
         g_print("%s\n", gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog)));
     }else{
@@ -328,9 +322,6 @@ default:
     }
 
     gtk_widget_destroy(dialog);
-
-
-
 
 }
 
@@ -405,8 +396,6 @@ case 3:
 
     }
 
-
-
 }
 
 
@@ -452,7 +441,7 @@ void desenharCirculo(){
     cairo_set_source_rgb (cr,corPincel.r,corPincel.g,corPincel.b);
     cairo_move_to (cr, ultimaCoordenadaX, ultimaCoordenadaY);
     cairo_arc (cr, ultimaCoordenadaX, ultimaCoordenadaY, 100, -1 * 3.14, 1 * 3.14);
-    //cairo_line_to (cr,cordenadaX+50,cordenadaY);
+
     cairo_stroke (cr);
     // atualiza o componente gtk
     gtk_widget_queue_draw_area (areaImagem,0,0,largura,altura);
@@ -509,23 +498,22 @@ static void limpaImagem (void){
 
 }
 
-/* Create a new surface of the appropriate size to store our scribbles */
+/* Cria uma nova superficie de pintura para armazenar as linhas */
 static gboolean configure_event_cb (GtkWidget*widget,GdkEventConfigure *event,gpointer data){
   if (surface)
     cairo_surface_destroy (surface);
 
   surface = gdk_window_create_similar_surface (gtk_widget_get_window (widget),CAIRO_CONTENT_COLOR,gtk_widget_get_allocated_width (widget),gtk_widget_get_allocated_height (widget));
 
-  /* Initialize the surface to white */
+  /* Inicializa uma nova superficie de pintura em branco */
   limpaImagem ();
 
-  /* We've handled the configure event, no need for further processing. */
+
   return TRUE;
 }
 
-/* Redraw the screen from the surface. Note that the ::draw
- * signal receives a ready-to-be-used cairo_t that is already
- * clipped to only draw the exposed areas of the widget
+/* Desenha a tela de pintura.
+ * recebe um objeto cairo_t pronto para uso
  */
 static gboolean draw_cb (GtkWidget *widget,cairo_t *cr,gpointer data){
     cairo_set_source_rgb (cr,corPadrao.r,corPadrao.g,corPadrao.b);
@@ -571,7 +559,7 @@ static gboolean button_press_event_cb (GtkWidget *widget,GdkEventButton *event,g
       gtk_widget_queue_draw (widget);
     }
 
-  /* We've handled the event, stop processing */
+
   return TRUE;
 }
 
@@ -580,19 +568,16 @@ static gboolean button_press_event_cb (GtkWidget *widget,GdkEventButton *event,g
  * a GdkEventMotion struct which contains this information.
  */
 static gboolean motion_notify_event_cb (GtkWidget *widget,GdkEventMotion *event,gpointer data){
-  /* paranoia check, in case we haven't gotten a configure event */
+
   if (surface == NULL)
     return FALSE;
 
   if (event->state & GDK_BUTTON1_MASK)
     draw_brush (widget, event->x, event->y);
 
-  /* We've handled it, stop processing */
+
   return TRUE;
 }
-
-
-
 
 
 
@@ -636,8 +621,8 @@ int main(int argc, char *argv[]){
     g_signal_connect (botaoSair, "clicked", gtk_main_quit, NULL);
 
     areaImagem = GTK_WIDGET(gtk_builder_get_object(builder, "areaImagem"));
-    //areaImagem = gtk_drawing_area_new ();
-  /* set a minimum size */
+  /*areaImagem = gtk_drawing_area_new ();
+   * define um tamanho minimo */
     gtk_widget_set_size_request (areaImagem, largura,altura);
 
 
