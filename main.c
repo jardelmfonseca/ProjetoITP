@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <gtk/gtk.h>
 #include "dominio.h"
 
@@ -11,6 +12,8 @@ Imagem imagem;
 Imagem * pontImagem=&imagem;
 int countCoordenadas=0;
 Coordenada coordenadas[20];
+
+
 
 int countCoordenadasPintar=0;
 Coordenada coordenadasPintar[20];
@@ -37,7 +40,7 @@ GtkWidget *areaImagem;
 
 /* Surface to store current scribbles */
 static cairo_surface_t *surface = NULL;
-static cairo_t *cr;
+ cairo_t *cr;
 
 
 
@@ -47,42 +50,8 @@ void save(GtkWidget *widget, gpointer window){
 
 
 
-// alocando a matriz de pixel com tamanho dinamico
-Pixel **matrixPixel;
-   matrixPixel = malloc (altura * sizeof (Pixel *)); // alocando o numeto de linhas/altura
-   int i;
-   for (i=0; i < altura; ++i){// percorrendo as linhas e alocando a altura
-     matrixPixel[i] = malloc (largura * sizeof (Pixel));
-   }
 
-    Pixel pixelPadrao= {corPadrao};
-    Pixel cor1={255,0,0};
-    Pixel cor2={0,255,0};
-    Pixel cor3={0,0,255};
-    Pixel cor4={255,255,0};
-    Pixel cor5={255,255,255};
-    Pixel cor6={0,0,0};
-    Pixel cores[6]={cor1,cor2,cor3,cor4,cor5,cor6};
-
-    int lg;
-    int corCount=0;
-    for(i=0; i< altura;i++){
-        for(lg=0;lg<largura;lg++){
-            if(corCount<6){
-            matrixPixel[i][lg]=cores[corCount];
-            }else{
-            matrixPixel[i][lg]=pixelPadrao;
-            }
-            corCount++;
-        }
-    }
-
-
- Imagem im = {"P3",largura,altura,255,matrixPixel};
- imagem=im;
-
-
-     GtkWidget *dialog;
+    GtkWidget *dialog;
     GtkFileFilter *filtro;
 
     dialog = gtk_file_chooser_dialog_new("Carregar imagem:", GTK_WINDOW(window), GTK_FILE_CHOOSER_ACTION_SAVE, GTK_STOCK_SAVE,GTK_RESPONSE_OK, GTK_STOCK_CANCEL,GTK_RESPONSE_CANCEL, NULL);
@@ -129,7 +98,7 @@ Pixel **matrixPixel;
 // coloca imagem no painel
 //   painelImagem = gtk_image_new_from_file ("imagem.ppm");
     // exibe dialog de sucesso na operação
-    GtkWidget *dialogConfirmacao;
+  GtkWidget *dialogConfirmacao;
   dialogConfirmacao = gtk_message_dialog_new(GTK_WINDOW(window),GTK_DIALOG_DESTROY_WITH_PARENT,GTK_MESSAGE_INFO,GTK_BUTTONS_OK,"Arquivo \"Imagem.ppm\" salvo com sucesso!");
   gtk_window_set_title(GTK_WINDOW(dialogConfirmacao), "Aviso");
   gtk_dialog_run(GTK_DIALOG(dialogConfirmacao));
@@ -140,13 +109,16 @@ Pixel **matrixPixel;
 
 
 
-void newImagem(GtkWidget *widget, gpointer window){
+void image(GtkWidget *widget, gpointer window){
+
+  cairo_t *cr;
   cr = cairo_create (surface);
   cairo_set_source_rgb (cr,corPadrao.r,corPadrao.g,corPadrao.b);
   cairo_paint (cr);
   cairo_destroy (cr);
   gtk_widget_set_size_request (areaImagem, largura,altura);
   gtk_widget_queue_draw_area (areaImagem,0,0,largura,altura);
+
   countCoordenadas=0;
   ultimaCoordenadaX=0;
   ultimaCoordenadaY=0;
@@ -158,28 +130,37 @@ void newImagem(GtkWidget *widget, gpointer window){
 }
 
 // FUNÇÃO PARA ABRIR O DIALOG SELETOR DE CORES
-void selecionarCor () {
+void color () {
 
 
   GtkWidget *dialog;
   GtkResponseType *tipoResultadoSelecao;
   GtkColorSelection *corSelecionada;
-
+  GdkColor corGdk;
   dialog = gtk_color_selection_dialog_new ("Cor da Linha");
+
+  corSelecionada = GTK_COLOR_SELECTION (gtk_color_selection_dialog_get_color_selection (GTK_COLOR_SELECTION_DIALOG (dialog)));
+
+  gtk_color_selection_set_previous_color (corSelecionada, &corGdk);
+  gtk_color_selection_set_current_color (corSelecionada, &corGdk);
+  gtk_color_selection_set_has_palette (corSelecionada, TRUE);
+
+
+
+
   tipoResultadoSelecao = gtk_dialog_run (GTK_DIALOG (dialog));
 
   // pegando o resultado da seleção se clicado em OK
   if(tipoResultadoSelecao == GTK_RESPONSE_OK){
-    GdkColor corGdk;
-    gtk_color_selection_dialog_get_color_selection(corSelecionada);
-    gtk_color_selection_get_current_color(corSelecionada,&corGdk);
 
-    printf("%d",(int)corGdk.red);
+     gtk_color_selection_get_current_color (corSelecionada,&corGdk);
+
+    printf("Passou aqui");
 
     // alterarndo a cor da linha
-    corPincel.r=corGdk.red;
-    corPincel.g=corGdk.green;
-    corPincel.b=corGdk.blue;
+    corPincel.r=(int)corGdk.red/257;
+    corPincel.g=(int)corGdk.green/257;
+    corPincel.b=(int)corGdk.blue/257;
 
   }
 
@@ -188,13 +169,13 @@ void selecionarCor () {
 }
 
 // essa função abre uma janela para a seleção da imagem e carrega a mesma no sistema
-void abrirImagem (GtkButton* button, gpointer user_data){
+void open (GtkButton* button, gpointer user_data){
 
 
     GtkWidget *dialog;
     GtkFileFilter *filtro;
 
-    dialog = gtk_file_chooser_dialog_new("Carregar imagem:", GTK_WINDOW(window), GTK_FILE_CHOOSER_ACTION_OPEN, GTK_STOCK_OPEN,GTK_RESPONSE_OK, GTK_STOCK_CANCEL,GTK_RESPONSE_CANCEL, NULL);
+    dialog = gtk_file_chooser_dialog_new("Carregar imagem:", GTK_WINDOW(window), GTK_FILE_CHOOSER_ACTION_OPEN, GTK_STOCK_OPEN,GTK_RESPONSE_ACCEPT, GTK_STOCK_CANCEL,GTK_RESPONSE_CANCEL, NULL);
     //criando filtro de extenção de arquivo
     filtro = gtk_file_filter_new();
     gtk_file_filter_add_pattern(filtro, "*.ppm");
@@ -210,119 +191,95 @@ void abrirImagem (GtkButton* button, gpointer user_data){
 
 
 
-   Pixel **matrixPixel;
+
+   int countLinhaMatriz=0;
+   int countColunaMatriz=0;
+   cairo_t *cr;
 
 
           // aqui vai carregar a imagem selecionada
     char *caminhoArquivo;
     caminhoArquivo = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
+    gtk_widget_destroy(dialog);
 
      FILE *file = fopen(caminhoArquivo,"r");
     if(file == NULL){
      printf("nao foi possivel carregar a imagem!");
     }else{
-    char tmp[11];
-
-    int itr=0;
-    while(fgets(tmp,11,file) != NULL){
-
-    switch(itr){
-  case 0:
-    break;
-  case 1:
-/*
- int c=0;
- int qtd=0;
- int vlrAlt=0;
-  while(str[c]!='\0'){
-        if(c!=' '){
-			switch(str[c]){
-				case '0':
-					qtd+=N[0];
-					break;
-				case '1':
-					qtd+=N[1];
-				  	break;
-				case '2':
-					qtd+=N[2];
-				  	break;
-				case '3':
-					qtd+=N[3];
-				  	break;
-				case '4':
-					qtd+=N[4];
-				  	break;
-				case '5':
-					qtd+=N[5];
-				  	break;
-				case '6':
-					qtd+=N[6];
-				  	break;
-				case '7':
-					qtd+=N[7];
-				  	break;
-				case '8':
-					qtd+=N[8];
-				  	break;
-				case '9':
-					qtd+=N[9];
-				  	break;
-				default:
-					break;
-			}
-			}else{
-
-			}
-      c++;
-
-  }
-/*
-
-    int lg;
-    int corCount=0;
-    for(i=0; i< altura;i++){
-        for(lg=0;lg<largura;lg++){
-            if(corCount<6){
-            matrixPixel[i][lg]=cores[corCount];
-            }else{
-            matrixPixel[i][lg]=pixelPadrao;
-            }
-            corCount++;
-        }
-    }
 
 
- */
+     // percorrendo e lendo o arquivo
 
+     fscanf(file,"%s",imagem.identificador);
+     fscanf(file,"%i %i",&imagem.largura,&imagem.altura);
+     fscanf(file,"%i",&imagem.valorMaximo);
 
-      //num = strtol(cNum, NULL, 10);
-    break;
-case 2:
-    break;
-default:
-    break;
-
-    }
-    itr++;
-
-
-    }
-
- //   Imagem im = {"P3",largura,altura,255,matrixPixel};
-//    imagem=im;
+     printf("%s\n",imagem.identificador);
+     printf("%i %i\n",imagem.largura,imagem.altura);
+     largura=imagem.largura;
+     altura=imagem.altura;
+     printf("%i\n",imagem.valorMaximo);
 
 
 
+     imagem.pixels = malloc (imagem.altura * sizeof (Pixel *)); // alocando o numeto de linhas/altura
+     int i;
+     for (i=0; i < imagem.altura; ++i){// percorrendo as linhas e alocando a altura
+     imagem.pixels[i] = malloc (imagem.largura * sizeof (Pixel));
+     }
+
+     int l=0,a=0,r,g,b;
+     i=0;
+     while(fscanf(file,"%i %i %i",&r,&g,&b) != EOF & i< altura*largura){
+         i++;
+         imagem.pixels[a][l].color.r=r;
+         imagem.pixels[a][l].color.g=g;
+         imagem.pixels[a][l].color.b=b;
+         //printf("[%i][%i] %i %i %i\n",a,l,imagem.pixels[a][l].color.r,imagem.pixels[a][l].color.g,imagem.pixels[a][l].color.b);
+         if(l==imagem.largura-1){
+            l=0;
+            a++;
+         }else{
+            l++;
+         }
+
+     }
+     printf("passou aqui\n");
+
+ //    printf("[%i][%i] %i %i %i\n",a,l,imagem.pixels[a][l].color.r,imagem.pixels[a][l].color.g,imagem.pixels[a][l].color.b);
     fclose(file);
     }
-
-
-        g_print("%s\n", gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog)));
     }else{
       // aqui se foi cancelado
     }
 
-    gtk_widget_destroy(dialog);
+    //newImagem(G_OBJECT(botaoNovo),(gpointer) window);
+    //gtk_widget_queue_draw_area (areaImagem,0,0,largura,altura);
+
+
+
+
+
+
+  int x=0,y=0;
+       for(y=0;y<imagem.altura;y++){
+        for(x=0;x<imagem.largura;x++){
+            cairo_t *cr;
+            cr = cairo_create (surface);
+            cairo_set_line_width (cr, 1);
+            cairo_set_source_rgb (cr,imagem.pixels[y][x].color.r,imagem.pixels[y][x].color.g,imagem.pixels[y][x].color.b);
+            cairo_rectangle (cr,x,y, 1,1);
+            cairo_stroke (cr);
+            cairo_destroy(cr);
+
+            // atualiza o componente gtk
+            gtk_widget_queue_draw_area (areaImagem,x,y,largura,altura);
+
+        }
+     }
+
+
+
 
 
 
@@ -331,11 +288,13 @@ default:
 
 
 
-void pintar(){
+void fill(){
 
+cairo_t *cr;
     switch(tipoUltipoDesenho){
 
 case 1:
+
     cr = cairo_create (surface);
     cairo_set_line_width (cr, larguraLinha);
     cairo_set_source_rgb (cr,corPincel.r,corPincel.g,corPincel.b);
@@ -405,8 +364,8 @@ case 3:
 }
 
 
-void desenharPoligono(){
-
+void polygon(){
+    cairo_t *cr;
     cr = cairo_create (surface);
     cairo_set_line_width (cr, larguraLinha);
     cairo_set_source_rgb (cr,corPincel.r,corPincel.g,corPincel.b);
@@ -441,7 +400,8 @@ void desenharPoligono(){
 
 }
 
-void desenharCirculo(){
+void circle(){
+    cairo_t *cr;
     cr = cairo_create (surface);
     cairo_set_line_width (cr, larguraLinha);
     cairo_set_source_rgb (cr,corPincel.r,corPincel.g,corPincel.b);
@@ -463,7 +423,8 @@ void desenharCirculo(){
 
 }
 
-void desenharRetangulo(){
+void rect(){
+    cairo_t *cr;
     cr = cairo_create (surface);
     cairo_set_line_width (cr, larguraLinha);
     cairo_set_source_rgb (cr, corPincel.r,corPincel.g,corPincel.b);
@@ -487,7 +448,8 @@ void desenharRetangulo(){
 
 
 
-static void limpaImagem (void){
+static void clear (void){
+  cairo_t *cr;
   cr = cairo_create (surface);
   cairo_set_source_rgb (cr,corPadrao.r,corPadrao.g,corPadrao.b);
   cairo_paint (cr);
@@ -504,24 +466,20 @@ static void limpaImagem (void){
 
 }
 
-/* Create a new surface of the appropriate size to store our scribbles */
+// configura comportamento do click
 static gboolean configure_event_cb (GtkWidget*widget,GdkEventConfigure *event,gpointer data){
   if (surface)
     cairo_surface_destroy (surface);
 
   surface = gdk_window_create_similar_surface (gtk_widget_get_window (widget),CAIRO_CONTENT_COLOR,gtk_widget_get_allocated_width (widget),gtk_widget_get_allocated_height (widget));
 
-  /* Initialize the surface to white */
-  limpaImagem ();
 
-  /* We've handled the configure event, no need for further processing. */
+  clear ();
+
   return TRUE;
 }
 
-/* Redraw the screen from the surface. Note that the ::draw
- * signal receives a ready-to-be-used cairo_t that is already
- * clipped to only draw the exposed areas of the widget
- */
+// pinta cordenada clicada
 static gboolean draw_cb (GtkWidget *widget,cairo_t *cr,gpointer data){
     cairo_set_source_rgb (cr,corPadrao.r,corPadrao.g,corPadrao.b);
     cairo_set_source_surface (cr, surface, 0, 0);
@@ -529,16 +487,19 @@ static gboolean draw_cb (GtkWidget *widget,cairo_t *cr,gpointer data){
     return FALSE;
 }
 
-/* Draw a rectangle on the surface at the given position */
+
+// faz a varredura da tela pintando o fundo da imagem
 static void draw_brush (GtkWidget *widget,gdouble x,gdouble y){
-  /* Paint to the surface, where we store our state */
+
+
+  cairo_t *cr;
   cr = cairo_create (surface);
   cairo_set_source_rgb (cr, corPincel.r,corPincel.g,corPincel.b);
   cairo_rectangle (cr, x - larguraLinha, y - larguraLinha, larguraLinha, larguraLinha);
   cairo_fill (cr);
   cairo_destroy (cr);
 
-  /* Now invalidate the affected region of the drawing area. */
+
   gtk_widget_queue_draw_area (widget, x - larguraLinha, y - larguraLinha, larguraLinha, larguraLinha);
 
   //armazena ultima cordenada do click
@@ -549,40 +510,34 @@ static void draw_brush (GtkWidget *widget,gdouble x,gdouble y){
   ultimaCoordenadaY=y-larguraLinha;
 }
 
-/* Handle button press events by either drawing a rectangle
- * or clearing the surface, depending on which button was pressed.
- * The ::button-press signal handler receives a GdkEventButton
- * struct which contains this information.
- */
+
+// evento do click
 static gboolean button_press_event_cb (GtkWidget *widget,GdkEventButton *event,gpointer data){
-  /* paranoia check, in case we haven't gotten a configure event */
+
   if (surface == NULL)
     return FALSE;
 
   if (event->button == GDK_BUTTON_PRIMARY){
       draw_brush (widget, event->x, event->y);
     }else if (event->button == GDK_BUTTON_SECONDARY){
-      limpaImagem();
+      clear();
       gtk_widget_queue_draw (widget);
     }
 
-  /* We've handled the event, stop processing */
+
   return TRUE;
 }
 
-/* Handle motion events by continuing to draw if button 1 is
- * still held down. The ::motion-notify signal handler receives
- * a GdkEventMotion struct which contains this information.
- */
+
+// escuta evento do mouse
 static gboolean motion_notify_event_cb (GtkWidget *widget,GdkEventMotion *event,gpointer data){
-  /* paranoia check, in case we haven't gotten a configure event */
+
   if (surface == NULL)
     return FALSE;
 
   if (event->state & GDK_BUTTON1_MASK)
     draw_brush (widget, event->x, event->y);
 
-  /* We've handled it, stop processing */
   return TRUE;
 }
 
@@ -594,6 +549,14 @@ static gboolean motion_notify_event_cb (GtkWidget *widget,GdkEventMotion *event,
 
 int main(int argc, char *argv[]){
 
+   Pixel **matrixPixel;
+   matrixPixel = malloc (altura * sizeof (Pixel *)); // alocando o numeto de linhas/altura
+   int i;
+   for (i=0; i < altura; ++i){// percorrendo as linhas e alocando a altura
+     matrixPixel[i] = malloc (largura * sizeof (Pixel));
+   }
+
+   free(matrixPixel);
 
     gtk_init(&argc, &argv);
 
@@ -604,25 +567,25 @@ int main(int argc, char *argv[]){
     gtk_builder_connect_signals(builder, NULL);
 
     botaoPintar = GTK_WIDGET(gtk_builder_get_object(builder, "botaoPintar"));
-    g_signal_connect (botaoPintar, "clicked",pintar, NULL);
+    g_signal_connect (botaoPintar, "clicked",fill, NULL);
 
     botaoPoligono = GTK_WIDGET(gtk_builder_get_object(builder, "botaoPoligono"));
-    g_signal_connect (botaoPoligono, "clicked", desenharPoligono, NULL);
+    g_signal_connect (botaoPoligono, "clicked", polygon, NULL);
 
     botaoCirculo = GTK_WIDGET(gtk_builder_get_object(builder, "botaoCirculo"));
-    g_signal_connect (botaoCirculo, "clicked",desenharCirculo, NULL);
+    g_signal_connect (botaoCirculo, "clicked",circle, NULL);
 
     botaoRetangulo = GTK_WIDGET(gtk_builder_get_object(builder, "botaoRetangulo"));
-    g_signal_connect (botaoRetangulo, "clicked",desenharRetangulo, NULL);
+    g_signal_connect (botaoRetangulo, "clicked",rect, NULL);
 
     botaoCor = GTK_WIDGET(gtk_builder_get_object(builder, "botaoCor"));
-    g_signal_connect (botaoCor, "clicked",selecionarCor, NULL);
+    g_signal_connect (botaoCor, "clicked",color, NULL);
 
     botaoAbrir = GTK_WIDGET(gtk_builder_get_object(builder, "botaoAbrir"));
-    g_signal_connect(G_OBJECT(botaoAbrir), "clicked", G_CALLBACK(abrirImagem), (gpointer) window);
+    g_signal_connect(G_OBJECT(botaoAbrir), "clicked", G_CALLBACK(open), (gpointer) window);
 
     botaoNovo = GTK_WIDGET(gtk_builder_get_object(builder, "botaoNovo"));
-    g_signal_connect(G_OBJECT(botaoNovo), "clicked", G_CALLBACK(newImagem), (gpointer) window);
+    g_signal_connect(G_OBJECT(botaoNovo), "clicked", G_CALLBACK(image), (gpointer) window);
 
     botaoSalvar = GTK_WIDGET(gtk_builder_get_object(builder, "botaoSalvar"));
     g_signal_connect(G_OBJECT(botaoSalvar), "clicked", G_CALLBACK(save), (gpointer) window);
@@ -631,29 +594,19 @@ int main(int argc, char *argv[]){
     g_signal_connect (botaoSair, "clicked", gtk_main_quit, NULL);
 
     areaImagem = GTK_WIDGET(gtk_builder_get_object(builder, "areaImagem"));
-    //areaImagem = gtk_drawing_area_new ();
-  /* set a minimum size */
+
     gtk_widget_set_size_request (areaImagem, largura,altura);
 
 
-  /* Signals used to handle the backing surface */
+
   g_signal_connect (areaImagem, "draw",G_CALLBACK (draw_cb), NULL);
   g_signal_connect (areaImagem,"configure-event",G_CALLBACK (configure_event_cb), NULL);
-
-  /* Event signals */
   g_signal_connect (areaImagem, "motion-notify-event",G_CALLBACK (motion_notify_event_cb), NULL);
   g_signal_connect (areaImagem, "button-press-event",G_CALLBACK (button_press_event_cb), NULL);
 
-  /* Ask to receive events the drawing area doesn't normally
-   * subscribe to. In particular, we need to ask for the
-   * button press and motion notify events that want to handle.
-   */
+
   gtk_widget_set_events (areaImagem, gtk_widget_get_events (areaImagem)| GDK_BUTTON_PRESS_MASK| GDK_POINTER_MOTION_MASK);
 
- //   painelImagem = GTK_WIDGET(gtk_builder_get_object(builder, "painelImagem"));
-    //painelImagem = gtk_image_new_from_file ("magem_circle.png");
-//    gtk_image_set_from_file (GTK_IMAGE (painelImagem), "magem_circle.png");
-  //  gtk_image_set_from_file (GTK_IMAGE (painelImagem),"imagem_circle.png");
 
     g_object_unref(builder);
 
