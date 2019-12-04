@@ -64,6 +64,7 @@ color_struct get_pixel_pixbuf(double x,double y,GdkPixbuf *pixbuf,unsigned char 
 }
 
 surface_pixbuf = gdk_pixbuf_get_from_drawable(NULL,GDK_DRAWABLE(areaImagem->window),gdk_colormap_get_system(),0,0,0,0,drawingarea->allocation.width,drawingarea->allocation.height);
+
 pixbuf_pixels = gdk_pixbuf_get_pixels (surface_pixbuf);
 
 
