@@ -4,7 +4,7 @@
 # Funções:
 
 1. **_Desenhar poligono_** 
-(Desenha um poliguno a partir de pontos determinados pelo usuario atravé de click's.) :wink:
+(Desenha um poliguno a partir de pontos determinados pelo usuario atravé de click's.) :space_invader:
 
 2. **_Desenhar circulo_** 
 (Desenha um círculo a partir de um ponto determinados pelo usuario atravé de um click, considerando o ponto o centro do circulo.)
@@ -32,3 +32,6 @@ Foi desenvolvido um pequeno passo-a-passo para configuração do ambiente de tra
 ### Clique aqui: [Tutorial](https://github.com/jardelmfonseca/ProjetoITP/blob/master/Configurando%20Ambiente%20GTK%20_codeBlocks.pdf) 
 
 # O que poderia ter sido feito diferemte?
+Para concretização do projeto foi utilizada a biblioteca *Cairo* que consiste numa poderosa ferramente para desenhar em 2d. Os modelos de desenho *Cairo* abstraem o contexto e auxiliam o programandor a desenvolver de maneira mais ágil. 
+
+Poderíamos ter construído todas as funções manualmente, porém demandaria mais tempo e mesmo assim não teríamos o mesmo resultado final ao implementar a interface gráfica com GTK 3.:sweat_smile:
